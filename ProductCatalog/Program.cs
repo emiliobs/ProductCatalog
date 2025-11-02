@@ -1,3 +1,6 @@
+using ProductCatalog.Models;
+using ProductCatalog.Services;
+
 namespace ProductCatalog
 {
     public class Program
@@ -7,6 +10,9 @@ namespace ProductCatalog
             var builder = WebApplication.CreateBuilder(args);
 
             // Add services to the container.
+            builder.Services.Configure<DatabaseSettings>(builder.Configuration.GetSection("DatabaseSettings"));
+            builder.Services.AddSingleton<ProductService>();
+
             builder.Services.AddControllersWithViews();
 
             var app = builder.Build();
