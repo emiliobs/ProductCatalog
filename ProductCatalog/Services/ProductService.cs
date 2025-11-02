@@ -16,7 +16,7 @@ public class ProductService
     }
 
     // Get all products
-    public async Task<List<Product>> GetProductsAsync() => await _productsCollection.Find(_ => true).ToListAsync();
+    public async Task<List<Product>> GetAllProductsAsyn() => await _productsCollection.Find(_ => true).ToListAsync();
 
     // Get product by ID
     public async Task<Product?> GetByIdAsync(string id) => await _productsCollection.Find(x => x.Id == id).FirstOrDefaultAsync();

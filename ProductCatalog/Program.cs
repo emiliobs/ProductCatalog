@@ -1,3 +1,4 @@
+﻿using ProductCatalog.Data;
 using ProductCatalog.Models;
 using ProductCatalog.Services;
 
@@ -5,17 +6,37 @@ namespace ProductCatalog
 {
     public class Program
     {
-        public static void Main(string[] args)
+        public static async Task Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
 
             // Add services to the container.
             builder.Services.Configure<DatabaseSettings>(builder.Configuration.GetSection("DatabaseSettings"));
+
             builder.Services.AddSingleton<ProductService>();
+            builder.Services.AddSingleton<DatabaseSeeder>();
 
             builder.Services.AddControllersWithViews();
 
             var app = builder.Build();
+
+            // ═══════════════════════════════════════════════════════
+            // SEED DATABASE - Add this entire section
+            // ═══════════════════════════════════════════════════════
+
+            using (var scope = app.Services.CreateScope())
+            {
+                var services = scope.ServiceProvider;
+                try
+                {
+                    var seeder = services.GetRequiredService<DatabaseSeeder>();
+                    await seeder.SeedAsync();
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Error seeding database: {ex.Message}");
+                }
+            }
 
             // Configure the HTTP request pipeline.
             if (!app.Environment.IsDevelopment())
@@ -34,7 +55,7 @@ namespace ProductCatalog
 
             app.MapControllerRoute(
                 name: "default",
-                pattern: "{controller=Home}/{action=Index}/{id?}");
+                pattern: "{controller=Products}/{action=Index}/{id?}");
 
             app.Run();
         }
