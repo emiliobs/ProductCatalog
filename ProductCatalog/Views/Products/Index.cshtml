@@ -1,76 +1,422 @@
 ﻿@model IEnumerable<ProductCatalog.Models.Product>
 
 @{
-    ViewData["Title"] = "Products";   
+    ViewData["Title"] = "Products";
 }
 
-<div class="container mt-4">
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h1>Product Catalog</h1>
-        <a asp-action="Create" class="btn btn-primary">
-            <i class="bi bi-plus-circle"></i> Add New Product
-        </a>
+<style>
+    /* Dark Theme Styles */
+    body {
+        background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+        min-height: 100vh;
+    }
+
+    .dark-container {
+        background: rgba(26, 26, 46, 0.95);
+        border-radius: 20px;
+        padding: 30px;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        backdrop-filter: blur(10px);
+    }
+
+    .page-header {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border-radius: 15px;
+        padding: 25px;
+        margin-bottom: 30px;
+        box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
+    }
+
+        .page-header h1 {
+            color: white;
+            font-weight: 700;
+            margin: 0;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+    .search-box {
+        background: rgba(255, 255, 255, 0.1);
+        border: 2px solid rgba(255, 255, 255, 0.2);
+        border-radius: 50px;
+        backdrop-filter: blur(10px);
+        transition: all 0.3s ease;
+    }
+
+        .search-box:focus-within {
+            border-color: #667eea;
+            box-shadow: 0 0 20px rgba(102, 126, 234, 0.5);
+            transform: translateY(-2px);
+        }
+
+        .search-box input {
+            background: transparent;
+            border: none;
+            color: white;
+            padding: 12px 20px;
+        }
+
+            .search-box input::placeholder {
+                color: rgba(255, 255, 255, 0.6);
+            }
+
+            .search-box input:focus {
+                outline: none;
+                color: white;
+            }
+
+    .btn-gradient-primary {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border: none;
+        color: white;
+        padding: 12px 30px;
+        border-radius: 50px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+    }
+
+        .btn-gradient-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 25px rgba(102, 126, 234, 0.6);
+            color: white;
+        }
+
+    .btn-search {
+        background: rgba(255, 255, 255, 0.2);
+        border: none;
+        color: white;
+        border-radius: 50px;
+        padding: 10px 25px;
+        transition: all 0.3s ease;
+    }
+
+        .btn-search:hover {
+            background: rgba(255, 255, 255, 0.3);
+            color: white;
+            transform: translateX(-3px);
+        }
+
+    /* Product Cards */
+    .product-card {
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 20px;
+        overflow: hidden;
+        transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        backdrop-filter: blur(10px);
+        height: 100%;
+    }
+
+        .product-card:hover {
+            transform: translateY(-10px) scale(1.02);
+            border-color: #667eea;
+            box-shadow: 0 15px 40px rgba(102, 126, 234, 0.4);
+        }
+
+        .product-card img {
+            height: 250px;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+
+        .product-card:hover img {
+            transform: scale(1.1);
+        }
+
+    .card-img-overlay {
+        position: relative;
+        overflow: hidden;
+    }
+
+    .image-placeholder {
+        background: linear-gradient(135deg, rgba(102, 126, 234, 0.3) 0%, rgba(118, 75, 162, 0.3) 100%);
+        height: 250px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .card-body {
+        padding: 20px;
+        background: rgba(255, 255, 255, 0.03);
+    }
+
+    .card-title {
+        color: white;
+        font-weight: 600;
+        font-size: 1.2rem;
+        margin-bottom: 10px;
+    }
+
+    .card-text {
+        color: rgba(255, 255, 255, 0.7);
+        font-size: 0.9rem;
+        line-height: 1.6;
+    }
+
+    .price-tag {
+        color: #667eea;
+        font-weight: 700;
+        font-size: 1.5rem;
+        text-shadow: 0 2px 10px rgba(102, 126, 234, 0.5);
+    }
+
+    .category-badge {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 5px 15px;
+        border-radius: 20px;
+        font-size: 0.85rem;
+        font-weight: 600;
+        box-shadow: 0 2px 10px rgba(102, 126, 234, 0.3);
+    }
+
+    .card-footer {
+        background: rgba(255, 255, 255, 0.05);
+        border-top: 1px solid rgba(255, 255, 255, 0.1);
+        padding: 15px;
+    }
+
+    .action-btn {
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        color: white;
+        transition: all 0.3s ease;
+        font-size: 0.85rem;
+        padding: 8px 12px;
+    }
+
+        .action-btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: white;
+            color: white;
+            transform: translateY(-2px);
+        }
+
+    .btn-outline-info:hover {
+        background: #17a2b8;
+        border-color: #17a2b8;
+    }
+
+    .btn-outline-warning:hover {
+        background: #ffc107;
+        border-color: #ffc107;
+        color: #000;
+    }
+
+    .btn-outline-danger:hover {
+        background: #dc3545;
+        border-color: #dc3545;
+    }
+
+    /* Alert Styles */
+    .alert-success {
+        background: linear-gradient(135deg, rgba(40, 167, 69, 0.2) 0%, rgba(25, 135, 84, 0.2) 100%);
+        border: 1px solid rgba(40, 167, 69, 0.5);
+        color: #75fb8f;
+        border-radius: 15px;
+        backdrop-filter: blur(10px);
+    }
+
+    .alert-info {
+        background: linear-gradient(135deg, rgba(13, 202, 240, 0.2) 0%, rgba(23, 162, 184, 0.2) 100%);
+        border: 1px solid rgba(13, 202, 240, 0.5);
+        color: #7dd3fc;
+        border-radius: 15px;
+        backdrop-filter: blur(10px);
+    }
+
+    .btn-close {
+        filter: brightness(0) invert(1);
+    }
+
+    /* Animations */
+    @@keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .product-card {
+        animation: fadeInUp 0.6s ease-out forwards;
+    }
+
+        .product-card:nth-child(1) {
+            animation-delay: 0.1s;
+        }
+
+        .product-card:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+
+        .product-card:nth-child(3) {
+            animation-delay: 0.3s;
+        }
+
+        .product-card:nth-child(4) {
+            animation-delay: 0.4s;
+        }
+
+        .product-card:nth-child(5) {
+            animation-delay: 0.5s;
+        }
+
+        .product-card:nth-child(6) {
+            animation-delay: 0.6s;
+        }
+
+    /* Scrollbar */
+    ::-webkit-scrollbar {
+        width: 10px;
+    }
+
+    ::-webkit-scrollbar-track {
+        background: #1a1a2e;
+    }
+
+    ::-webkit-scrollbar-thumb {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border-radius: 10px;
+    }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
+        }
+
+    /* Stats Counter */
+    .stats-counter {
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 15px;
+        padding: 15px;
+        margin-bottom: 20px;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+        .stats-counter h3 {
+            color: #667eea;
+            font-size: 2rem;
+            font-weight: 700;
+            margin: 0;
+        }
+
+        .stats-counter p {
+            color: rgba(255, 255, 255, 0.7);
+            margin: 0;
+            font-size: 0.9rem;
+        }
+</style>
+
+<div class="dark-container">
+    <!-- Header Section -->
+    <div class="page-header">
+        <div class="d-flex justify-content-between align-items-center flex-wrap">
+            <div>
+                <h1>
+                    <i class="bi bi-shop-window"></i> Product Catalog
+                </h1>
+                <p class="text-white-50 mb-0 mt-2">Discover our amazing collection</p>
+            </div>
+            <a asp-action="Create" class="btn btn-gradient-primary">
+                <i class="bi bi-plus-circle me-2"></i>Add New Product
+            </a>
+        </div>
     </div>
 
+    <!-- Success Message -->
     @if (TempData["SuccessMessage"] != null)
     {
         <div class="alert alert-success alert-dismissible fade show" role="alert">
+            <i class="bi bi-check-circle-fill me-2"></i>
             @TempData["SuccessMessage"]
             <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
         </div>
     }
 
+    <!-- Stats Counter -->
+    @if (Model.Any())
+    {
+        <div class="stats-counter text-center">
+            <h3>@Model.Count()</h3>
+            <p><i class="bi bi-box-seam"></i> Products Available</p>
+        </div>
+    }
+
     <!-- Search Bar -->
     <form asp-action="Index" method="get" class="mb-4">
-        <div class="input-group">
-            <input type="text" class="form-control" name="searchTerm"
-                   placeholder="Search by name or category..."
+        <div class="input-group search-box">
+            <span class="input-group-text bg-transparent border-0">
+                <i class="bi bi-search text-white"></i>
+            </span>
+            <input type="text"
+                   class="form-control"
+                   name="searchTerm"
+                   placeholder="Search products by name or category..."
                    value="@ViewBag.SearchTerm">
-            <button class="btn btn-outline-secondary" type="submit">
-                <i class="bi bi-search"></i> Search
+            <button class="btn btn-search" type="submit">
+                <i class="bi bi-search me-2"></i>Search
             </button>
             @if (!string.IsNullOrEmpty(ViewBag.SearchTerm))
             {
-                <a asp-action="Index" class="btn btn-outline-secondary">Clear</a>
+                <a asp-action="Index" class="btn btn-search">
+                    <i class="bi bi-x-circle me-2"></i>Clear
+                </a>
             }
         </div>
     </form>
 
+    <!-- Products Grid -->
     @if (Model.Any())
     {
-        <div class="row row-cols-1 row-cols-md-3 g-4">
+        <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
             @foreach (var product in Model)
             {
                 <div class="col">
-                    <div class="card h-100 shadow-sm">
-                        @if (!string.IsNullOrEmpty(product.ImagePath))
-                        {
-                            <img src="@product.ImagePath" class="card-img-top" alt="@product.Name"
-                                 style="height: 200px; object-fit: cover;">
-                        }
-                        else
-                        {
-                            <div class="card-img-top bg-light d-flex align-items-center justify-content-center"
-                                 style="height: 200px;">
-                                <i class="bi bi-image" style="font-size: 3rem; color: #ccc;"></i>
-                            </div>
-                        }
+                    <div class="card product-card">
+                        <div class="card-img-overlay">
+                            @if (!string.IsNullOrEmpty(product.ImagePath))
+                            {
+                                <img src="@product.ImagePath" class="card-img-top" alt="@product.Name">
+                            }
+                            else
+                            {
+                                <div class="image-placeholder">
+                                    <i class="bi bi-image" style="font-size: 4rem; color: rgba(255, 255, 255, 0.5);"></i>
+                                </div>
+                            }
+                        </div>
+
                         <div class="card-body">
                             <h5 class="card-title">@product.Name</h5>
-                            <p class="card-text text-muted">@product.Description</p>
-                            <div class="d-flex justify-content-between align-items-center">
-                                <span class="badge bg-secondary">@product.Category</span>
-                                <h4 class="text-primary mb-0">$@product.Price.ToString("N2")</h4>
+                            <p class="card-text">@product.Description</p>
+                            <div class="d-flex justify-content-between align-items-center mt-3">
+                                <span class="category-badge">
+                                    <i class="bi bi-tag-fill me-1"></i>@product.Category
+                                </span>
+                                <h4 class="price-tag mb-0">
+                                    $@product.Price.ToString("N2")
+                                </h4>
                             </div>
                         </div>
-                        <div class="card-footer bg-transparent border-top-0">
+
+                        <div class="card-footer">
                             <div class="btn-group w-100" role="group">
                                 <a asp-action="Details" asp-route-id="@product.Id"
-                                   class="btn btn-sm btn-outline-info">Details</a>
+                                   class="btn btn-sm btn-outline-info action-btn">
+                                    <i class="bi bi-eye"></i> Details
+                                </a>
                                 <a asp-action="Edit" asp-route-id="@product.Id"
-                                   class="btn btn-sm btn-outline-warning">Edit</a>
+                                   class="btn btn-sm btn-outline-warning action-btn">
+                                    <i class="bi bi-pencil"></i> Edit
+                                </a>
                                 <a asp-action="Delete" asp-route-id="@product.Id"
-                                   class="btn btn-sm btn-outline-danger">Delete</a>
+                                   class="btn btn-sm btn-outline-danger action-btn">
+                                    <i class="bi bi-trash"></i> Delete
+                                </a>
                             </div>
                         </div>
                     </div>
@@ -80,16 +426,35 @@
     }
     else
     {
-        <div class="alert alert-info" role="alert">
-            <i class="bi bi-info-circle"></i>
-            @if (!string.IsNullOrEmpty(ViewBag.SearchTerm))
-            {
-                <text>No products found matching "@ViewBag.SearchTerm"</text>
-            }
-            else
-            {
-                <text>No products available. Click "Add New Product" to create one.</text>
-            }
+        <div class="alert alert-info text-center" role="alert">
+            <i class="bi bi-info-circle" style="font-size: 3rem;"></i>
+            <h4 class="mt-3">
+                @if (!string.IsNullOrEmpty(ViewBag.SearchTerm))
+                {
+                    <text>No products found matching "@ViewBag.SearchTerm"</text>
+                }
+                else
+                {
+                    <text>No products available yet</text>
+                }
+            </h4>
+            <p class="mb-0">Click "Add New Product" to create your first product!</p>
         </div>
     }
 </div>
+
+<script>
+    // Add smooth scroll behavior
+    document.documentElement.style.scrollBehavior = 'smooth';
+
+    // Add hover sound effect (optional)
+    document.querySelectorAll('.product-card').forEach(card => {
+        card.addEventListener('mouseenter', function() {
+            this.style.transform = 'translateY(-10px) scale(1.02)';
+        });
+
+        card.addEventListener('mouseleave', function() {
+            this.style.transform = 'translateY(0) scale(1)';
+        });
+    });
+</script>

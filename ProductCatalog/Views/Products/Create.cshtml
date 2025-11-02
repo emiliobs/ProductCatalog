@@ -1,5 +1,99 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
+﻿@model ProductCatalog.Models.Product
+
 @{
+    ViewData["Title"] = "Create Product";
 }
+
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow">
+                <div class="card-header bg-primary text-white">
+                    <h2 class="mb-0"><i class="bi bi-plus-circle"></i> Create New Product</h2>
+                </div>
+                <div class="card-body">
+                    <form asp-action="Create" method="post" enctype="multipart/form-data">
+                        <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
+                        
+                        <div class="mb-3">
+                            <label asp-for="Name" class="form-label"></label>
+                            <input asp-for="Name" class="form-control" placeholder="Enter product name" />
+                            <span asp-validation-for="Name" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="Description" class="form-label"></label>
+                            <textarea asp-for="Description" class="form-control" rows="3" 
+                                      placeholder="Enter product description"></textarea>
+                            <span asp-validation-for="Description" class="text-danger"></span>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="Price" class="form-label"></label>
+                                <div class="input-group">
+                                    <span class="input-group-text">$</span>
+                                    <input asp-for="Price" class="form-control" 
+                                           placeholder="0.00" step="0.01" />
+                                </div>
+                                <span asp-validation-for="Price" class="text-danger"></span>
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="Category" class="form-label"></label>
+                                <input asp-for="Category" class="form-control" 
+                                       placeholder="e.g., Electronics, Clothing" />
+                                <span asp-validation-for="Category" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="imageFile" class="form-label">Product Image</label>
+                            <input type="file" class="form-control" id="imageFile" name="imageFile" 
+                                   accept="image/*" onchange="previewImage(event)" />
+                            <small class="form-text text-muted">
+                                Accepted formats: JPG, PNG, GIF (Max 5MB)
+                            </small>
+                        </div>
+
+                        <!-- Image Preview -->
+                        <div class="mb-3" id="imagePreview" style="display: none;">
+                            <label class="form-label">Image Preview:</label>
+                            <div class="text-center">
+                                <img id="preview" src="" alt="Preview" 
+                                     class="img-thumbnail" style="max-height: 300px;" />
+                            </div>
+                        </div>
+
+                        <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                            <a asp-action="Index" class="btn btn-secondary">
+                                <i class="bi bi-arrow-left"></i> Cancel
+                            </a>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="bi bi-save"></i> Create Product
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    
+    <script>
+        function previewImage(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    document.getElementById('preview').src = e.target.result;
+                    document.getElementById('imagePreview').style.display = 'block';
+                }
+                reader.readAsDataURL(file);
+            }
+        }
+    </script>
+    }

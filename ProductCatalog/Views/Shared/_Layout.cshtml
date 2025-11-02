@@ -3,47 +3,193 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - ProductCatalog</title>
+    <title>@ViewData["Title"] - Product Catalog</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/ProductCatalog.styles.css" asp-append-version="true" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+
+    <style>
+        /* Dark Theme Global Styles */
+        body {
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            min-height: 100vh;
+            color: white;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        /* Navbar Styles */
+        .navbar-dark-custom {
+            background: rgba(26, 26, 46, 0.95) !important;
+            backdrop-filter: blur(10px);
+            border-bottom: 2px solid rgba(102, 126, 234, 0.3);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .navbar-brand {
+            font-weight: 700;
+            font-size: 1.5rem;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            transition: all 0.3s ease;
+        }
+
+            .navbar-brand:hover {
+                transform: scale(1.05);
+            }
+
+            .navbar-brand i {
+                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                -webkit-background-clip: text;
+                -webkit-text-fill-color: transparent;
+                background-clip: text;
+            }
+
+        .nav-link {
+            color: rgba(255, 255, 255, 0.8) !important;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            position: relative;
+            padding: 10px 20px !important;
+        }
+
+            .nav-link:hover {
+                color: #667eea !important;
+                transform: translateY(-2px);
+            }
+
+            .nav-link::after {
+                content: '';
+                position: absolute;
+                bottom: 0;
+                left: 50%;
+                width: 0;
+                height: 2px;
+                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                transition: all 0.3s ease;
+                transform: translateX(-50%);
+            }
+
+            .nav-link:hover::after {
+                width: 80%;
+            }
+
+        /* Footer Styles */
+        .footer {
+            background: rgba(26, 26, 46, 0.95);
+            border-top: 2px solid rgba(102, 126, 234, 0.3);
+            backdrop-filter: blur(10px);
+            color: rgba(255, 255, 255, 0.7);
+            padding: 20px 0;
+            margin-top: 50px;
+        }
+
+            .footer i {
+                color: #667eea;
+            }
+
+        /* Container Styles */
+        .container {
+            padding-top: 20px;
+            padding-bottom: 20px;
+        }
+
+        /* Animations */
+        @@keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        main {
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        /* Navbar Toggle */
+        .navbar-toggler {
+            border-color: rgba(102, 126, 234, 0.5);
+        }
+
+        .navbar-toggler-icon {
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba(255, 255, 255, 0.8)' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
+        }
+
+        .navbar-toggler:focus {
+            box-shadow: 0 0 0 0.25rem rgba(102, 126, 234, 0.5);
+        }
+
+        /* Scrollbar for the whole page */
+        ::-webkit-scrollbar {
+            width: 12px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #1a1a2e;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 10px;
+        }
+
+            ::-webkit-scrollbar-thumb:hover {
+                background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
+            }
+    </style>
 </head>
 <body>
     <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
+        <nav class="navbar navbar-expand-sm navbar-dark navbar-dark-custom">
             <div class="container-fluid">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">ProductCatalog</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
+                <a class="navbar-brand" asp-area="" asp-controller="Products" asp-action="Index">
+                    <i class="bi bi-shop-window me-2"></i>Product Catalog
+                </a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse"
+                        aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                     <ul class="navbar-nav flex-grow-1">
-                        @* <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
-                        </li> *@
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+                            <a class="nav-link" asp-area="" asp-controller="Products" asp-action="Index">
+                                <i class="bi bi-grid-3x3-gap me-2"></i>Products
+                            </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="products" asp-action="Index">Product List</a>
+                            <a class="nav-link" asp-area="" asp-controller="Products" asp-action="Create">
+                                <i class="bi bi-plus-circle me-2"></i>Add Product
+                            </a>
                         </li>
                     </ul>
                 </div>
             </div>
         </nav>
     </header>
+
     <div class="container">
         <main role="main" class="pb-3">
             @RenderBody()
         </main>
     </div>
 
-    <footer class="border-top footer text-muted">
+    <footer class="footer text-center">
         <div class="container">
-            &copy; 2025 - ProductCatalog - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+            <span>
+                &copy; 2025 - Product Catalog -
+                <i class="bi bi-code-slash"></i> By Emilio Barrera Built with
+                <i class="bi bi-heart-fill" style="color: #e74c3c;"></i>
+                using ASP.NET 8 Core & MongoDB
+            </span>
         </div>
     </footer>
+
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
