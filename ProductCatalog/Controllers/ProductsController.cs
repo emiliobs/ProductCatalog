@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.AspNetCore.Mvc;
 using ProductCatalog.Models;
 using ProductCatalog.Services;
 
@@ -165,5 +166,48 @@ public class ProductsController : Controller
         }
 
         return View(product);
+    }
+
+    // GET: Products/Delete/5
+    [HttpGet]
+    public async Task<IActionResult> Delete(string id)
+    {
+        if (string.IsNullOrEmpty(id))
+        {
+            return NotFound();
+        }
+
+        var product = await _productService.GetByIdAsync(id);
+        if (id is null)
+        {
+            return NotFound();
+        }
+
+        return View(product);
+    }
+
+    // POST: Porducts/Delete/5
+    [HttpPost, ActionName("Delete")]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> DeleteConfirm(string id)
+    {
+        var product = await _productService.GetByIdAsync(id);
+        if (product != null)
+        {
+            // Delete imageb file if exist
+            if (!string.IsNullOrEmpty(product.ImagePath))
+            {
+                var imagePath = Path.Combine(_webHostEnvironment.WebRootPath, product.ImagePath.TrimStart('/'));
+                if (System.IO.File.Exists(imagePath))
+                {
+                    System.IO.File.Delete(imagePath);
+                }
+            }
+
+            await _productService.DeleteAsync(id);
+            TempData["SuccessMessage"] = "Product deleted successfully!";
+        }
+
+        return RedirectToAction(nameof(Index));
     }
 }
