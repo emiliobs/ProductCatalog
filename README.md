@@ -14,8 +14,8 @@ A modern, full-stack web application for managing product catalogues with image 
 <img width="2546" height="1338" alt="image" src="https://github.com/user-attachments/assets/bd34533d-cacd-4450-adc8-1e826318dc3f" />
 
 
-## View Edit Product
+## View Details Product
 <img width="2526" height="1226" alt="image" src="https://github.com/user-attachments/assets/62b224ef-195c-4d40-8270-2265b73aa389" />
 
-## View Details Product
+## View Delete Product
 <img width="2527" height="1019" alt="image" src="https://github.com/user-attachments/assets/285cc4b3-34a1-442f-a438-a71b26309fad" />
