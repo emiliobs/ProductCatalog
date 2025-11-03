@@ -148,4 +148,22 @@ public class ProductsController : Controller
 
         return View(product);
     }
+
+    // GET Detail Products/5
+    [HttpGet]
+    public async Task<IActionResult> Details(string id)
+    {
+        if (string.IsNullOrEmpty(id))
+        {
+            return NotFound();
+        }
+
+        var product = await _productService.GetByIdAsync(id);
+        if (product is null)
+        {
+            return NotFound();
+        }
+
+        return View(product);
+    }
 }
